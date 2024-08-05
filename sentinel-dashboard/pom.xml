@@ -101,7 +101,8 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-nacos</artifactId>
-            <scope>test</scope>
+            <!--官方已经编写了 nacos、apollo 等对限流规则持久化存储的支持。注释掉test-->
+            <!--<scope>test</scope>-->
         </dependency>
         <!-- for Apollo rule publisher sample -->
         <dependency>
