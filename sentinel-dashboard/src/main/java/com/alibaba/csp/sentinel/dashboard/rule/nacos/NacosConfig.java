@@ -15,11 +15,21 @@
  */
 package com.alibaba.csp.sentinel.dashboard.rule.nacos;
 
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.AuthorityRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.DegradeRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.ParamFlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.SystemRuleEntity;
 import com.alibaba.csp.sentinel.datasource.Converter;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
 import com.alibaba.nacos.api.config.ConfigService;
+import java.util.Optional;
+import java.util.Properties;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,21 +43,166 @@ import java.util.List;
 @Configuration
 public class NacosConfig {
 
-    //配置的 nacos 地址，如果配置文件没有找到配置，则使用默认的localhost
+
+    /**
+     * 注⼊配置⽂件中的信息
+     */
     @Value("${nacos.addr:localhost}")
-    private String nacosAddr;
+    private String serverAddr;
+
+    @Value("${nacos.namespace:public}")
+    private String namespace;
+
+    @Value("${nacos.username:}")
+    private String username;
+
+    @Value("${nacos.password:}")
+    private String password;
+
     @Bean
     public Converter<List<FlowRuleEntity>, String> flowRuleEntityEncoder() {
         return JSON::toJSONString;
     }
 
+    /**
+     * 流控规则的解码器
+     * @return
+     */
     @Bean
     public Converter<String, List<FlowRuleEntity>> flowRuleEntityDecoder() {
         return s -> JSON.parseArray(s, FlowRuleEntity.class);
     }
 
+    /**
+     * 限流规则的编码器
+     * @return
+     */
+    @Bean
+    public Converter<List<DegradeRuleEntity>, String> degradeFlowRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 限流规则的解码器
+     * @return
+     */
+    @Bean
+    public Converter<String, List<DegradeRuleEntity>> degradeFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, DegradeRuleEntity.class);
+    }
+
+    /**
+     * 热点参数规则的编码器
+     * @return
+     */
+    @Bean
+    public Converter<List<ParamFlowRuleEntity>, String> paramFlowRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 热点参数规则的解码器
+     * @return
+     */
+    @Bean
+    public Converter<String, List<ParamFlowRuleEntity>> paramFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, ParamFlowRuleEntity.class);
+    }
+
+    /**
+     * 网关api规则的编码器
+     * @return
+     */
+    @Bean
+    public Converter<List<ApiDefinitionEntity>, String> gatewayApiRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 网关api规则的解码器
+     * @return
+     */
+    @Bean
+    public Converter<String, List<ApiDefinitionEntity>> gatewayApiRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, ApiDefinitionEntity.class);
+    }
+
+    /**
+     * 网关流控规则的编码器
+     * @return
+     */
+    @Bean
+    public Converter<List<GatewayFlowRuleEntity>, String> gatewayFlowRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 网关流控规则的解码器
+     * @return
+     */
+    @Bean
+    public Converter<String, List<GatewayFlowRuleEntity>> gatewayFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, GatewayFlowRuleEntity.class);
+    }
+
+    /**
+     * 授权规则的编码器
+     * @return
+     */
+    @Bean
+    public Converter<List<AuthorityRuleEntity>, String> authorityRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 授权规则的解码器
+     * @return
+     */
+    @Bean
+    public Converter<String, List<AuthorityRuleEntity>> authorityFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, AuthorityRuleEntity.class);
+    }
+
+    /**
+     * 系统规则的编码器
+     * @return
+     */
+    @Bean
+    public Converter<List<SystemRuleEntity>, String> systemRuleEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 系统规则的解码器
+     * @return
+     */
+    @Bean
+    public Converter<String, List<SystemRuleEntity>> systemRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, SystemRuleEntity.class);
+    }
+
+    /**
+     * 创建 Nacos 的配置服务
+     * @return
+     * @throws Exception
+     */
     @Bean
     public ConfigService nacosConfigService() throws Exception {
-        return ConfigFactory.createConfigService(nacosAddr);
+        Properties properties = new Properties();
+        properties.put(PropertyKeyConst.SERVER_ADDR, serverAddr);
+        if(StringUtils.isNotBlank(namespace)) {
+            properties.put(PropertyKeyConst.NAMESPACE, namespace);
+        }
+        if(StringUtils.isNotBlank(username)) {
+            properties.put(PropertyKeyConst.USERNAME, username);
+        }
+        if(StringUtils.isNotBlank(password)) {
+            properties.put(PropertyKeyConst.PASSWORD, password);
+        }
+        return ConfigFactory.createConfigService(properties);
     }
+//    @Bean
+//    public ConfigService nacosConfigService() throws Exception {
+//        return ConfigFactory.createConfigService(nacosAddr);
+//    }
 }
