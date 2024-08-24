@@ -22,12 +22,13 @@ public class AuthorityRuleNacosPublisher implements DynamicRulePublisher<List<Au
     private Converter<List<AuthorityRuleEntity>, String> converter;
 
     @Override
-    public void publish(String app, List<AuthorityRuleEntity> rules) throws Exception {
+    public boolean publish(String app, List<AuthorityRuleEntity> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
-            return;
+            return false;
         }
         configService.publishConfig(app + NacosConfigUtil.AUTHORITY_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, converter.convert(rules));
+        return false;
     }
 }

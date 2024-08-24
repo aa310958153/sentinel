@@ -22,12 +22,13 @@ public class SystemRuleNacosPublisher implements DynamicRulePublisher<List<Syste
     private Converter<List<SystemRuleEntity>, String> converter;
 
     @Override
-    public void publish(String app, List<SystemRuleEntity> rules) throws Exception {
+    public boolean publish(String app, List<SystemRuleEntity> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
-            return;
+            return false;
         }
         configService.publishConfig(app + NacosConfigUtil.SYSTEM_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, converter.convert(rules));
+        return false;
     }
 }

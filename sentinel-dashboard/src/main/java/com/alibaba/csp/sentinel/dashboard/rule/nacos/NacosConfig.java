@@ -50,7 +50,7 @@ public class NacosConfig {
     @Value("${nacos.addr:localhost}")
     private String serverAddr;
 
-    @Value("${nacos.namespace:public}")
+    @Value("${nacos.namespace:f981fdb6-c9f2-455e-814e-c48bf33ced62}")
     private String namespace;
 
     @Value("${nacos.username:}")
@@ -188,6 +188,9 @@ public class NacosConfig {
      */
     @Bean
     public ConfigService nacosConfigService() throws Exception {
+        if(StringUtils.isBlank(namespace)&&StringUtils.isBlank(username)){
+            return ConfigFactory.createConfigService(serverAddr);
+        }
         Properties properties = new Properties();
         properties.put(PropertyKeyConst.SERVER_ADDR, serverAddr);
         if(StringUtils.isNotBlank(namespace)) {
@@ -199,10 +202,7 @@ public class NacosConfig {
         if(StringUtils.isNotBlank(password)) {
             properties.put(PropertyKeyConst.PASSWORD, password);
         }
+
         return ConfigFactory.createConfigService(properties);
     }
-//    @Bean
-//    public ConfigService nacosConfigService() throws Exception {
-//        return ConfigFactory.createConfigService(nacosAddr);
-//    }
 }

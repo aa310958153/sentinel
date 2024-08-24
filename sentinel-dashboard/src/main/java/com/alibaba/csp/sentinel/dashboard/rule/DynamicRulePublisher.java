@@ -24,9 +24,10 @@ public interface DynamicRulePublisher<T> {
     /**
      * Publish rules to remote rule configuration center for given application name.
      *
-     * @param app app name
+     * @param app   app name
      * @param rules list of rules to push
+     * @return
      * @throws Exception if some error occurs
      */
-    void publish(String app, T rules) throws Exception;
+    boolean publish(String app, T rules) throws Exception;
 }

@@ -26,30 +26,30 @@ public final class NacosConfigUtil {
     /**
      * 热点参数规则POSTFIX
      */
-    public static final String FLOW_DATA_ID_POSTFIX = "-flow-rules";
-    public static final String PARAM_FLOW_DATA_ID_POSTFIX = "-param-rules";
+    public static final String FLOW_DATA_ID_POSTFIX = "-flow-rules.json";
+    public static final String PARAM_FLOW_DATA_ID_POSTFIX = "-param-rules.json";
 
 
     /**
      * 熔断规则POSTFIX
      */
-    public static final String DEGRADE_FLOW_DATA_ID_POSTFIX = "-degrade-rules";
+    public static final String DEGRADE_FLOW_DATA_ID_POSTFIX = "-degrade-rules.json";
 
 
     /**
      * 网关api规则POSTFIX
      */
-    public static final String GATEWAY_API_DATA_ID_POSTFIX = "-gateway-api-rules";
+    public static final String GATEWAY_API_DATA_ID_POSTFIX = "-gateway-api-rules.json";
 
     /**
      * 网关流控规则POSTFIX
      */
-    public static final String GATEWAY_FLOW_DATA_ID_POSTFIX = "-gateway-flow-rules";
+    public static final String GATEWAY_FLOW_DATA_ID_POSTFIX = "-gateway-flow-rules.json";
 
     /**
      * 系统规则POSTFIX
      */
-    public static final String SYSTEM_DATA_ID_POSTFIX = "-system-rules";
+    public static final String SYSTEM_DATA_ID_POSTFIX = "-system-rules.json";
 
     /**
      * 授权规则POSTFIX

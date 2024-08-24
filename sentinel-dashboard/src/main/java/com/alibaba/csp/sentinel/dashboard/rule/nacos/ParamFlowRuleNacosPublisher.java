@@ -37,12 +37,13 @@ public class ParamFlowRuleNacosPublisher implements DynamicRulePublisher<List<Pa
     private Converter<List<ParamFlowRuleEntity>, String> converter;
 
     @Override
-    public void publish(String app, List<ParamFlowRuleEntity> rules) throws Exception {
+    public boolean publish(String app, List<ParamFlowRuleEntity> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
-            return;
+            return false;
         }
         configService.publishConfig(app + NacosConfigUtil.PARAM_FLOW_DATA_ID_POSTFIX,
             NacosConfigUtil.GROUP_ID, converter.convert(rules));
+        return false;
     }
 }

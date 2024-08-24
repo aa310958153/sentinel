@@ -23,12 +23,13 @@ public class GatewayFlowRuleNacosPublisher implements DynamicRulePublisher<List<
     private Converter<List<GatewayFlowRuleEntity>, String> converter;
 
     @Override
-    public void publish(String app, List<GatewayFlowRuleEntity> rules) throws Exception {
+    public boolean publish(String app, List<GatewayFlowRuleEntity> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
-            return;
+            return false;
         }
         configService.publishConfig(app + NacosConfigUtil.GATEWAY_FLOW_DATA_ID_POSTFIX,
                 NacosConfigUtil.GROUP_ID, converter.convert(rules));
+        return false;
     }
 }
