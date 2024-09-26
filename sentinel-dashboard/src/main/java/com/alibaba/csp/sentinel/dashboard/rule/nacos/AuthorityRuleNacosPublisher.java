@@ -3,6 +3,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.AuthorityRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.datasource.Converter;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.util.AssertUtil;
 import com.alibaba.nacos.api.config.ConfigService;
 import java.util.List;
@@ -14,15 +15,15 @@ import org.springframework.stereotype.Component;
  * @date 2022/3/2 18:24
  */
 @Component("authorityRuleNacosPublisher")
-public class AuthorityRuleNacosPublisher implements DynamicRulePublisher<List<AuthorityRuleEntity>> {
+public class AuthorityRuleNacosPublisher implements DynamicRulePublisher<List<AuthorityRule>> {
 
     @Autowired
     private ConfigService configService;
     @Autowired
-    private Converter<List<AuthorityRuleEntity>, String> converter;
+    private Converter<List<AuthorityRule>, String> converter;
 
     @Override
-    public boolean publish(String app, List<AuthorityRuleEntity> rules) throws Exception {
+    public boolean publish(String app, List<AuthorityRule> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
             return false;

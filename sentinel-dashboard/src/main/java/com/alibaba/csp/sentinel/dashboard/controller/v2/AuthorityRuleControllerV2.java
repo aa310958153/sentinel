@@ -27,9 +27,11 @@ import com.alibaba.csp.sentinel.dashboard.repository.rule.RuleRepository;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,10 +59,10 @@ public class AuthorityRuleControllerV2 {
     //改为使用nacos
     @Autowired
     @Qualifier("authorityRuleNacosProvider")
-    private DynamicRuleProvider<List<AuthorityRuleEntity>> ruleProvider;
+    private DynamicRuleProvider<List<AuthorityRule>> ruleProvider;
     @Autowired
     @Qualifier("authorityRuleNacosPublisher")
-    private DynamicRulePublisher<List<AuthorityRuleEntity>> rulePublisher;
+    private DynamicRulePublisher<List<AuthorityRule>> rulePublisher;
     @Autowired
     private RuleRepository<AuthorityRuleEntity, Long> repository;
     @Autowired
@@ -84,9 +86,11 @@ public class AuthorityRuleControllerV2 {
             return Result.ofFail(-1, "given ip does not belong to given app");
         }
         try {
-            List<AuthorityRuleEntity> rules =ruleProvider.getRules(app);
-            rules = repository.saveAll(rules);
-            return Result.ofSuccess(rules);
+            List<AuthorityRule> rules = ruleProvider.getRules(app);
+            List<AuthorityRuleEntity> ruleEntity = rules.stream()
+                .map(c -> AuthorityRuleEntity.fromAuthorityRule(app, ip, port, c)).collect(Collectors.toList());
+            ruleEntity = repository.saveAll(ruleEntity);
+            return Result.ofSuccess(ruleEntity);
         } catch (Throwable throwable) {
             logger.error("Error when querying authority rules", throwable);
             return Result.ofFail(-1, throwable.getMessage());
@@ -199,7 +203,8 @@ public class AuthorityRuleControllerV2 {
 
     private boolean publishRules(String app, String ip, Integer port) throws Exception {
         List<AuthorityRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
-         rulePublisher.publish(app, rules);
+        List<AuthorityRule> ruleList = rules.stream().map(c -> c.getRule()).collect(Collectors.toList());
+         rulePublisher.publish(app, ruleList);
          return true;
     }
 }

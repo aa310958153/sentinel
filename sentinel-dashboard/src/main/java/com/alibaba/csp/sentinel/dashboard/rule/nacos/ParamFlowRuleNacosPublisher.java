@@ -18,6 +18,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.ParamFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.datasource.Converter;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.util.AssertUtil;
 import com.alibaba.nacos.api.config.ConfigService;
 import java.util.List;
@@ -29,15 +30,15 @@ import org.springframework.stereotype.Component;
  * @date 2022/3/2 18:24
  */
 @Component("paramFlowRuleNacosPublisher")
-public class ParamFlowRuleNacosPublisher implements DynamicRulePublisher<List<ParamFlowRuleEntity>> {
+public class ParamFlowRuleNacosPublisher implements DynamicRulePublisher<List<ParamFlowRule>> {
 
     @Autowired
     private ConfigService configService;
     @Autowired
-    private Converter<List<ParamFlowRuleEntity>, String> converter;
+    private Converter<List<ParamFlowRule>, String> converter;
 
     @Override
-    public boolean publish(String app, List<ParamFlowRuleEntity> rules) throws Exception {
+    public boolean publish(String app, List<ParamFlowRule> rules) throws Exception {
         AssertUtil.notEmpty(app, "app name cannot be empty");
         if (rules == null) {
             return false;

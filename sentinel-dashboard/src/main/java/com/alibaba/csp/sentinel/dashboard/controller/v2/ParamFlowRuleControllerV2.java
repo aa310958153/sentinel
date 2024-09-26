@@ -21,6 +21,7 @@ import com.alibaba.csp.sentinel.dashboard.client.CommandNotFoundException;
 import com.alibaba.csp.sentinel.dashboard.client.SentinelApiClient;
 import com.alibaba.csp.sentinel.dashboard.controller.ParamFlowRuleController;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.SentinelVersion;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.AbstractRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.ParamFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.discovery.AppManagement;
@@ -31,12 +32,16 @@ import com.alibaba.csp.sentinel.dashboard.rule.DynamicRuleProvider;
 import com.alibaba.csp.sentinel.dashboard.rule.DynamicRulePublisher;
 import com.alibaba.csp.sentinel.dashboard.util.VersionUtils;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.csp.sentinel.util.StringUtil;
+import com.alibaba.nacos.common.utils.CollectionUtils;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,10 +69,10 @@ public class ParamFlowRuleControllerV2 {
     //改为使用nacos
     @Autowired
     @Qualifier("paramFlowRuleNacosProvider")
-    private DynamicRuleProvider<List<ParamFlowRuleEntity>> ruleProvider;
+    private DynamicRuleProvider<List<ParamFlowRule>> ruleProvider;
     @Autowired
     @Qualifier("paramFlowRuleNacosPublisher")
-    private DynamicRulePublisher<List<ParamFlowRuleEntity>> rulePublisher;
+    private DynamicRulePublisher<List<ParamFlowRule>> rulePublisher;
     
     @Autowired
     private AppManagement appManagement;
@@ -105,9 +110,14 @@ public class ParamFlowRuleControllerV2 {
             return unsupportedVersion();
         }
         try {
-            List<ParamFlowRuleEntity> rules = ruleProvider.getRules(app);
-            rules = repository.saveAll(rules);
-              return Result.ofSuccess(rules);
+            List<ParamFlowRule> rules = ruleProvider.getRules(app);
+            List<ParamFlowRuleEntity> ruleList = Collections.emptyList();
+            if (CollectionUtils.isNotEmpty(rules)) {
+                ruleList = rules.stream().map(c -> ParamFlowRuleEntity.fromParamFlowRule(app, ip, port, c)).collect(
+                    Collectors.toList());
+            }
+            repository.saveAll(ruleList);
+              return Result.ofSuccess(ruleList);
         } catch (ExecutionException ex) {
             logger.error("Error when querying parameter flow rules", ex.getCause());
             if (isNotSupported(ex.getCause())) {
@@ -266,7 +276,8 @@ public class ParamFlowRuleControllerV2 {
         return CompletableFuture.runAsync(() -> {
             List<ParamFlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
             try {
-                rulePublisher.publish(app, rules);
+                List<ParamFlowRule> ruleList = rules.stream().map(AbstractRuleEntity::getRule).collect(Collectors.toList());
+                rulePublisher.publish(app, ruleList);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

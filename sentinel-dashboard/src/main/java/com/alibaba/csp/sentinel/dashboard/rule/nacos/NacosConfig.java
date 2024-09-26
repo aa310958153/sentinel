@@ -23,6 +23,8 @@ import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.ParamFlowRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.SystemRuleEntity;
 import com.alibaba.csp.sentinel.datasource.Converter;
+import com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;
+import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigFactory;
@@ -96,7 +98,7 @@ public class NacosConfig {
      * @return
      */
     @Bean
-    public Converter<List<ParamFlowRuleEntity>, String> paramFlowRuleEntityEncoder() {
+    public Converter<List<ParamFlowRule>, String> paramFlowRuleEntityEncoder() {
         return JSON::toJSONString;
     }
 
@@ -105,8 +107,8 @@ public class NacosConfig {
      * @return
      */
     @Bean
-    public Converter<String, List<ParamFlowRuleEntity>> paramFlowRuleEntityDecoder() {
-        return s -> JSON.parseArray(s, ParamFlowRuleEntity.class);
+    public Converter<String, List<ParamFlowRule>> paramFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, ParamFlowRule.class);
     }
 
     /**
@@ -150,7 +152,7 @@ public class NacosConfig {
      * @return
      */
     @Bean
-    public Converter<List<AuthorityRuleEntity>, String> authorityRuleEntityEncoder() {
+    public Converter<List<AuthorityRule>, String> authorityRuleEntityEncoder() {
         return JSON::toJSONString;
     }
 
@@ -159,8 +161,8 @@ public class NacosConfig {
      * @return
      */
     @Bean
-    public Converter<String, List<AuthorityRuleEntity>> authorityFlowRuleEntityDecoder() {
-        return s -> JSON.parseArray(s, AuthorityRuleEntity.class);
+    public Converter<String, List<AuthorityRule>> authorityFlowRuleEntityDecoder() {
+        return s -> JSON.parseArray(s, AuthorityRule.class);
     }
 
     /**
