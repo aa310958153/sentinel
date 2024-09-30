@@ -109,5 +109,8 @@ public interface AuthService<R> {
          * @return ID of current user
          */
         String getId();
+
+
+        String getTagId();
     }
 }

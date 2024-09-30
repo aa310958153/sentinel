@@ -15,6 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.discovery;
 
+import com.alibaba.csp.sentinel.dashboard.auth.AuthService.AuthUser;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +26,8 @@ public interface MachineDiscovery {
     List<String> getAppNames();
 
     Set<AppInfo> getBriefApps();
+
+    Set<AppInfo> getBriefApps(AuthUser authUser);
 
     AppInfo getDetailApp(String app);
 

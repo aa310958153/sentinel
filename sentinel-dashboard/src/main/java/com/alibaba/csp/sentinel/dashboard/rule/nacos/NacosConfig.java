@@ -17,6 +17,7 @@ package com.alibaba.csp.sentinel.dashboard.rule.nacos;
 
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.ApiDefinitionEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.gateway.GatewayFlowRuleEntity;
+import com.alibaba.csp.sentinel.dashboard.datasource.entity.permission.DashboardPermissionEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.AuthorityRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.DegradeRuleEntity;
 import com.alibaba.csp.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
@@ -181,6 +182,26 @@ public class NacosConfig {
     @Bean
     public Converter<String, List<SystemRuleEntity>> systemRuleEntityDecoder() {
         return s -> JSON.parseArray(s, SystemRuleEntity.class);
+    }
+
+    /**
+     * 系统规则的编码器
+     *
+     * @return
+     */
+    @Bean
+    public Converter<DashboardPermissionEntity, String> dashboardPermissionEntityEncoder() {
+        return JSON::toJSONString;
+    }
+
+    /**
+     * 系统规则的解码器
+     *
+     * @return
+     */
+    @Bean
+    public Converter<String, DashboardPermissionEntity> dashboardPermissionEntityDecoder() {
+        return s -> JSON.parseObject(s, DashboardPermissionEntity.class);
     }
 
     /**

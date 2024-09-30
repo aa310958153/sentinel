@@ -15,6 +15,8 @@
  */
 package com.alibaba.csp.sentinel.dashboard.controller;
 
+import com.alibaba.csp.sentinel.dashboard.auth.AuthService;
+import com.alibaba.csp.sentinel.dashboard.auth.AuthService.AuthUser;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +46,9 @@ public class AppController {
     @Autowired
     private AppManagement appManagement;
 
+    @Autowired
+    private AuthService<HttpServletRequest> authService;
+
     @GetMapping("/names.json")
     public Result<List<String>> queryApps(HttpServletRequest request) {
         return Result.ofSuccess(appManagement.getAppNames());
@@ -51,7 +56,10 @@ public class AppController {
 
     @GetMapping("/briefinfos.json")
     public Result<List<AppInfo>> queryAppInfos(HttpServletRequest request) {
-        List<AppInfo> list = new ArrayList<>(appManagement.getBriefApps());
+        //获取当前用户信息
+        AuthUser authUser = authService.getAuthUser(request);
+
+        List<AppInfo> list = new ArrayList<>(appManagement.getBriefApps(authUser));
         Collections.sort(list, Comparator.comparing(AppInfo::getApp));
         return Result.ofSuccess(list);
     }

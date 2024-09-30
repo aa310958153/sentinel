@@ -15,6 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.discovery;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.alibaba.csp.sentinel.dashboard.config.DashboardConfig;
@@ -42,7 +43,20 @@ public class MachineInfo implements Comparable<MachineInfo> {
         machineInfo.setPort(port);
         return machineInfo;
     }
+    /**
+     * 授权信息
+     */
+    private Auth auth;
 
+
+
+    public Auth getAuth() {
+        return auth;
+    }
+
+    public void setAuth(Auth auth) {
+        this.auth = auth;
+    }
     public String toHostPort() {
         return ip + ":" + port;
     }
@@ -182,4 +196,36 @@ public class MachineInfo implements Comparable<MachineInfo> {
     public String toLogString() {
         return app + "|" + ip + "|" + port + "|" + version;
     }
+
+    public static class Auth {
+
+        private String authGroupName;
+        private List<String> tagList;
+        private List<String> userList;
+
+        public List<String> getTagList() {
+            return tagList;
+        }
+
+        public void setTagList(List<String> tagList) {
+            this.tagList = tagList;
+        }
+
+        public List<String> getUserList() {
+            return userList;
+        }
+
+        public void setUserList(List<String> userList) {
+            this.userList = userList;
+        }
+
+        public String getAuthGroupName() {
+            return authGroupName;
+        }
+
+        public void setAuthGroupName(String authGroupName) {
+            this.authGroupName = authGroupName;
+        }
+    }
+
 }

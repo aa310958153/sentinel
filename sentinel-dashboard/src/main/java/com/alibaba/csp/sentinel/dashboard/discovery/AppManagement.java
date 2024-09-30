@@ -15,6 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.discovery;
 
+import com.alibaba.csp.sentinel.dashboard.auth.AuthService.AuthUser;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -44,6 +45,13 @@ public class AppManagement implements MachineDiscovery {
     public Set<AppInfo> getBriefApps() {
         return machineDiscovery.getBriefApps();
     }
+
+    @Override
+    public Set<AppInfo> getBriefApps(AuthUser authUser) {
+        return machineDiscovery.getBriefApps(authUser);
+
+    }
+
 
     @Override
     public long addMachine(MachineInfo machineInfo) {

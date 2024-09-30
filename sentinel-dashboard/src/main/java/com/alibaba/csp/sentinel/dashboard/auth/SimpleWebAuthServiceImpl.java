@@ -41,8 +41,15 @@ public class SimpleWebAuthServiceImpl implements AuthService<HttpServletRequest>
 
         private String username;
 
+        private String tagId;
+
         public SimpleWebAuthUserImpl(String username) {
             this.username = username;
+        }
+
+        public SimpleWebAuthUserImpl(String username, String tagId) {
+            this(username);
+            this.tagId = tagId;
         }
 
         @Override
@@ -68,6 +75,14 @@ public class SimpleWebAuthServiceImpl implements AuthService<HttpServletRequest>
         @Override
         public String getId() {
             return username;
+        }
+
+        public String getTagId() {
+            return tagId;
+        }
+
+        public void setTagId(String tagId) {
+            this.tagId = tagId;
         }
     }
 }

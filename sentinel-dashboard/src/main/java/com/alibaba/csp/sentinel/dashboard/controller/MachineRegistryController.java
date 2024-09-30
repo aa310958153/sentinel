@@ -21,6 +21,8 @@ import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.csp.sentinel.dashboard.discovery.MachineInfo;
 import com.alibaba.csp.sentinel.dashboard.domain.Result;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.nacos.common.utils.StringUtils;
 import org.apache.http.conn.util.InetAddressUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +47,7 @@ public class MachineRegistryController {
     public Result<?> receiveHeartBeat(String app,
                                       @RequestParam(value = "app_type", required = false, defaultValue = "0")
                                           Integer appType, Long version, String v, String hostname, String ip,
-                                      Integer port) {
+                                      Integer port,String auth) {
         if (StringUtil.isBlank(app) || app.length() > 256) {
             return Result.ofFail(-1, "invalid appName");
         }
@@ -78,6 +80,9 @@ public class MachineRegistryController {
             machineInfo.setHeartbeatVersion(version);
             machineInfo.setLastHeartbeat(System.currentTimeMillis());
             machineInfo.setVersion(sentinelVersion);
+            if (StringUtils.isNotBlank(auth)) {
+                machineInfo.setAuth(JSON.parseObject(auth, MachineInfo.Auth.class));
+            }
             appManagement.addMachine(machineInfo);
             return Result.ofSuccessMsg("success");
         } catch (Exception e) {

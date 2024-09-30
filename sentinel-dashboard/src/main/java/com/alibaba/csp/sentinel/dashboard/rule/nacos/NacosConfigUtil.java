@@ -67,6 +67,9 @@ public final class NacosConfigUtil {
     public static final String SERVER_TRANSPORT_CONFIG_DATA_ID_POSTFIX = "-cs-transport-config";
     public static final String SERVER_FLOW_CONFIG_DATA_ID_POSTFIX = "-cs-flow-config";
     public static final String SERVER_NAMESPACE_SET_DATA_ID_POSTFIX = "-cs-namespace-set";
-
+    /**
+     * 控制面板数据权限配置
+     */
+    public static final String DASHBOARD_PERMISSION_DATA_ID_POSTFIX = "-dashboard-permission.json";
     private NacosConfigUtil() {}
 }

@@ -15,6 +15,7 @@
  */
 package com.alibaba.csp.sentinel.dashboard.config;
 
+import com.alibaba.csp.sentinel.dashboard.auth.LogHandlerInterceptor;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -53,9 +54,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Autowired
     private AuthorizationInterceptor authorizationInterceptor;
 
+    @Autowired
+    private LogHandlerInterceptor logHandlerInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authorizationInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(logHandlerInterceptor).addPathPatterns("/**");
     }
 
     @Override
