@@ -42,6 +42,7 @@ public class MachineRegistryController {
     @Autowired
     private AppManagement appManagement;
 
+    //心跳采用 application/x-www-form-urlencoded 传递，这个版本解析不到参数 待排查
     @ResponseBody
     @RequestMapping("/machine")
     public Result<?> receiveHeartBeat(String app,
