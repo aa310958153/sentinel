@@ -30,7 +30,7 @@ public class WrapperFilter
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
         throws IOException, ServletException {
-        ServletRequest requestWrapper = new RequestWrapper((HttpServletRequest) request);
+        ServletRequest requestWrapper = new MultiReadRequestWrapper((HttpServletRequest) request);
         chain.doFilter(requestWrapper, response);
     }
 

@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.http.impl.client.RequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -45,8 +46,8 @@ public class LogHandlerInterceptor implements HandlerInterceptor {
     }
 
     private byte[] readRequestBody(HttpServletRequest request) throws IOException {
-        if (request.getClass().isAssignableFrom(RequestWrapper.class)) {
-            RequestWrapper requestWrapper = (RequestWrapper) request;
+        if (request.getClass().isAssignableFrom(MultiReadRequestWrapper.class)) {
+            MultiReadRequestWrapper requestWrapper = (MultiReadRequestWrapper) request;
             return requestWrapper.getBody();
         }
         request.setCharacterEncoding(StandardCharsets.UTF_8.name());
