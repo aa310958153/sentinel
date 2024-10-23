@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
  * @Date: 2024/9/30 11:04
  * @Description: 必须描述类做什么事情, 实现什么功能
  */
+//会导致无法绑定  application/x-www-form-urlencoded 报文体内容。待研究。tomcat9有问题
 @Component
 @WebFilter(filterName = "wrapperFilter", urlPatterns = {"/**"})
 public class WrapperFilter
